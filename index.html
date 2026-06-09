@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Resumo Inteligente de Processos — Dashboard IA | Jhon E. Martinez</title>
+<meta name="description" content="Resumo automático de processos judiciais com LLM. Sintetiza autos volumosos, extrai fatos, pedidos e andamento em minutos."/>
+<meta name="keywords" content="LLM, NLP, Summarization, Direito"/>
+<meta property="og:title" content="Resumo Inteligente de Processos — Dashboard IA interativo"/>
+<meta property="og:description" content="Resumo automático de processos judiciais com LLM. Sintetiza autos volumosos, extrai fatos, pedidos e andamento em minutos."/>
+<meta name="twitter:card" content="summary_large_image"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{sans:['Inter','sans-serif'],mono:['JetBrains Mono','monospace']}}}}</script>
+<style>
+:root{--c:#8b5cf6}
+*{box-sizing:border-box;scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;overflow-x:hidden}
+.dark body{background:#0a0a0f;color:#f1f5f9}
+.light body{background:#f6f8fc;color:#0f172a}
+.glass{background:rgba(255,255,255,0.04);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.08)}
+.light .glass{background:#fff;border:1px solid rgba(15,23,42,0.07);box-shadow:0 4px 24px rgba(15,23,42,0.05)}
+.gtext{background:linear-gradient(135deg,var(--c),#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.card-hover{transition:all .3s cubic-bezier(.4,0,.2,1)}
+.card-hover:hover{transform:translateY(-3px);box-shadow:0 16px 40px var(--c)22}
+.tag{display:inline-flex;align-items:center;padding:3px 12px;border-radius:9999px;font-size:12px;font-weight:600}
+.btn-p{background:linear-gradient(135deg,var(--c),#8b5cf6);color:#fff;padding:11px 26px;border-radius:12px;font-weight:600;font-size:14px;border:none;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 8px 30px var(--c)66}
+.btn-g{background:transparent;color:var(--c);padding:11px 26px;border-radius:12px;font-weight:600;font-size:14px;border:1px solid var(--c)66;cursor:pointer;transition:.2s;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.btn-g:hover{background:var(--c)1a}
+.light .text-white{color:#0f172a !important}
+.light .text-gray-400{color:#475569 !important}
+.light .text-gray-300{color:#334155 !important}
+.light .text-gray-500{color:#64748b !important}
+.light .demo-area .text-white{color:#f1f5f9 !important}
+.light .demo-area .text-gray-400{color:#9ca3af !important}
+.light .demo-area .text-gray-300{color:#d1d5db !important}
+.light .demo-area .text-gray-200{color:#e5e7eb !important}
+.code-pill{font-family:'JetBrains Mono',monospace;font-size:12px}
+input,textarea{outline:none}
+.noise{background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E")}
+.scrollbar-thin::-webkit-scrollbar{height:6px;width:6px}.scrollbar-thin::-webkit-scrollbar-thumb{background:var(--c)55;border-radius:3px}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes slideUp{0%{opacity:0;transform:translateY(16px)}100%{opacity:1;transform:translateY(0)}}
+@keyframes countup{0%{opacity:0}100%{opacity:1}}
+.animate-float{animation:float 6s ease-in-out infinite}
+.animate-slide{animation:slideUp .5s ease-out}
+.demo-dark{background:#0d0d16;border:1px solid rgba(255,255,255,0.08)}
+.light .demo-dark{background:#12121c}
+</style>
+</head>
+<body class="dark">
+<div id="root"></div>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel" data-presets="react">
+const CFG={"slug": "resumo-processos", "titulo": "Resumo Inteligente de Processos", "vertical": "Direito", "descricao": "Resumo automático de processos judiciais com LLM. Sintetiza autos volumosos, extrai fatos, pedidos e andamento em minutos.", "ia": ["LLM", "NLP", "Summarization"], "demo": "rag", "fonte": "Processos judiciais", "fonteUrl": "https://www.cnj.jus.br", "kpis": [{"label": "Redução", "value": "95%", "delta": ""}, {"label": "Tempo", "value": "min vs dias", "delta": ""}, {"label": "Precisão", "value": "96%", "delta": "+9%"}, {"label": "Autos", "value": "completos", "delta": ""}], "chartType": "bar", "chartLabel": "Estrutura do Processo", "series": [71.1, 69.9, 59.4, 56.5, 54.4, 54.2, 56.4, 52.9, 59.2, 66.1, 72.5, 77.3, 71.9, 71.9, 70.1, 67.2, 64.5, 55.2, 56.0, 59.2, 64.6, 71.3, 70.2, 76.0], "features": ["Resumo de autos volumosos", "Extração de fatos e pedidos", "Linha do tempo processual", "Pontos controvertidos"], "color": "#8b5cf6", "icon": "⚖️", "portfolioUrl": "https://jhondados.github.io/portfolio", "githubUser": "jhondados"};
+const {useState,useEffect,useRef,useMemo}=React;
+const delay=ms=>new Promise(r=>setTimeout(r,ms));
+
+// ===== CHART (canvas) =====
+function Chart({type,data,label,color}){
+  const ref=useRef(null);
+  useEffect(()=>{const cv=ref.current;if(!cv)return;const ctx=cv.getContext('2d');const W=cv.width,H=cv.height;
+    let prog=0;const max=Math.max(...data)*1.1,min=Math.min(...data)*0.9;
+    const draw=()=>{ctx.clearRect(0,0,W,H);
+      ctx.strokeStyle='rgba(255,255,255,0.05)';ctx.lineWidth=1;
+      for(let y=20;y<H-20;y+=(H-40)/4){ctx.beginPath();ctx.moveTo(36,y);ctx.lineTo(W-10,y);ctx.stroke();}
+      const n=data.length,sx=(W-50)/(n-1),sy=(H-40)/(max-min);
+      const tx=i=>36+i*sx,ty=v=>H-20-(v-min)*sy;
+      const shown=Math.floor(n*prog);
+      if(type==='bar'){const bw=(W-50)/n*0.6;for(let i=0;i<shown;i++){const h=(data[i]-min)*sy;const grad=ctx.createLinearGradient(0,ty(data[i]),0,H-20);grad.addColorStop(0,color);grad.addColorStop(1,color+'44');ctx.fillStyle=grad;ctx.fillRect(tx(i)-bw/2,ty(data[i]),bw,h);}}
+      else{const grad=ctx.createLinearGradient(0,0,0,H);grad.addColorStop(0,color+'33');grad.addColorStop(1,color+'00');ctx.beginPath();ctx.moveTo(tx(0),ty(data[0]));for(let i=1;i<shown;i++)ctx.lineTo(tx(i),ty(data[i]));ctx.lineTo(tx(Math.max(shown-1,0)),H-20);ctx.lineTo(tx(0),H-20);ctx.closePath();ctx.fillStyle=grad;ctx.fill();ctx.beginPath();ctx.strokeStyle=color;ctx.lineWidth=2.5;for(let i=0;i<shown;i++)i?ctx.lineTo(tx(i),ty(data[i])):ctx.moveTo(tx(i),ty(data[i]));ctx.stroke();if(shown>0){ctx.fillStyle=color;ctx.beginPath();ctx.arc(tx(shown-1),ty(data[shown-1]),4,0,7);ctx.fill();}}
+      ctx.fillStyle='rgba(255,255,255,0.4)';ctx.font='9px monospace';ctx.fillText(max.toFixed(0),6,24);ctx.fillText(min.toFixed(0),6,H-22);
+      if(prog<1){prog=Math.min(1,prog+0.04);requestAnimationFrame(draw);}};
+    draw();},[type,data,color]);
+  return(<div><div className="text-xs text-gray-400 mb-2 font-medium">{label}</div><canvas ref={ref} width={520} height={200} className="w-full"/></div>);
+}
+
+// ===== KPI =====
+function KPI({k,color}){
+  const [v,setV]=useState(0);
+  const num=parseFloat(String(k.value).replace(/[^\d.,-]/g,'').replace(',','.'));
+  const hasNum=!isNaN(num)&&String(k.value).match(/\d/);
+  useEffect(()=>{if(!hasNum)return;let s=0;const step=num/30;const iv=setInterval(()=>{s+=step;if(s>=num){s=num;clearInterval(iv);}setV(s);},20);return()=>clearInterval(iv);},[]);
+  const disp=hasNum?String(k.value).replace(/[\d.,]+/,m=>{const dp=m.split(/[.,]/)[1];const dec=dp?dp.length:0;return v.toFixed(dec);}):k.value;
+  const up=k.delta&&!k.delta.startsWith('-');const dn=k.delta&&k.delta.startsWith('-');
+  return(<div className="glass rounded-2xl p-4 card-hover">
+    <div className="text-xs text-gray-400 mb-1">{k.label}</div>
+    <div className="text-2xl font-black gtext">{disp}</div>
+    {k.delta&&<div className={`text-xs mt-1 font-semibold ${up?'text-green-400':dn?'text-red-400':'text-gray-500'}`}>{up?'▲':dn?'▼':''} {k.delta}</div>}
+  </div>);
+}
+
+// ===== DEMOS =====
+function CreditDemo(){
+  const [v,setV]=useState({renda:5000,tempo:24,divida:30,hist:80});
+  const score=useMemo(()=>{const s=(Math.min(v.renda/10000,1)*300+Math.min(v.tempo/60,1)*200+(1-v.divida/100)*250+v.hist/100*250);return Math.round(s);},[v]);
+  const faixa=score>700?{l:'Aprovado',c:'#10b981'}:score>500?{l:'Análise',c:'#f59e0b'}:{l:'Negado',c:'#ef4444'};
+  const F=[{n:'Renda mensal (R$)',k:'renda',mn:0,mx:20000,st:500},{n:'Tempo de relacionamento (meses)',k:'tempo',mn:0,mx:60,st:1},{n:'Comprometimento de renda (%)',k:'divida',mn:0,mx:100,st:1},{n:'Score histórico',k:'hist',mn:0,mx:100,st:1}];
+  return(<div className="space-y-3">{F.map(f=><div key={f.k}><div className="flex justify-between text-xs text-gray-400 mb-1"><span>{f.n}</span><span className="text-white font-mono">{v[f.k]}</span></div><input type="range" min={f.mn} max={f.mx} step={f.st} value={v[f.k]} onChange={e=>setV(s=>({...s,[f.k]:+e.target.value}))} className="w-full" style={{accentColor:'var(--c)'}}/></div>)}
+    <div className="demo-dark rounded-xl p-4 text-center mt-2"><div className="text-xs text-gray-400 mb-1">Score de Crédito</div><div className="text-4xl font-black" style={{color:faixa.c}}>{score}</div><div className="text-sm font-bold mt-1" style={{color:faixa.c}}>{faixa.l}</div><div className="w-full bg-gray-800 rounded-full h-2 mt-3"><div className="h-2 rounded-full transition-all duration-500" style={{width:`${score/10}%`,background:faixa.c}}/></div></div>
+  </div>);
+}
+function ForecastDemo(){
+  const [h,setH]=useState(6);const ref=useRef(null);
+  useEffect(()=>{const cv=ref.current;if(!cv)return;const ctx=cv.getContext('2d');const W=cv.width,H=cv.height;const hist=CFG.series.slice(0,18);const last=hist[hist.length-1];const pred=Array.from({length:h},(_,i)=>last+i*2.2+Math.sin(i)*4);const all=[...hist,...pred];const mx=Math.max(...all)*1.1,mn=Math.min(...all)*0.9;const sx=(W-40)/(all.length-1),sy=(H-30)/(mx-mn);const tx=i=>30+i*sx,ty=v=>H-15-(v-mn)*sy;ctx.clearRect(0,0,W,H);ctx.strokeStyle='rgba(255,255,255,0.05)';for(let y=15;y<H;y+=(H-30)/4){ctx.beginPath();ctx.moveTo(30,y);ctx.lineTo(W,y);ctx.stroke();}ctx.fillStyle=CFG.color+'15';ctx.beginPath();for(let i=0;i<pred.length;i++)ctx.lineTo(tx(18+i),ty(pred[i])-6);for(let i=pred.length-1;i>=0;i--)ctx.lineTo(tx(18+i),ty(pred[i])+6);ctx.fill();ctx.beginPath();ctx.strokeStyle=CFG.color;ctx.lineWidth=2.5;hist.forEach((v,i)=>i?ctx.lineTo(tx(i),ty(v)):ctx.moveTo(tx(i),ty(v)));ctx.stroke();ctx.beginPath();ctx.strokeStyle='#06b6d4';ctx.setLineDash([5,4]);ctx.lineWidth=2.5;ctx.moveTo(tx(17),ty(hist[17]));pred.forEach((v,i)=>ctx.lineTo(tx(18+i),ty(v)));ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='rgba(255,255,255,.5)';ctx.font='9px monospace';ctx.fillText('histórico',32,12);ctx.fillStyle='#06b6d4';ctx.fillText('previsão',W*.7,12);},[h]);
+  return(<div className="space-y-3"><canvas ref={ref} width={520} height={180} className="w-full rounded-lg demo-dark"/><div><div className="flex justify-between text-xs text-gray-400 mb-1"><span>Horizonte de previsão</span><span className="text-white font-mono">{h} períodos</span></div><input type="range" min="3" max="12" value={h} onChange={e=>setH(+e.target.value)} className="w-full" style={{accentColor:'var(--c)'}}/></div><div className="grid grid-cols-3 gap-2 text-center"><div className="demo-dark rounded-lg p-2"><div className="text-xs text-gray-500">Tendência</div><div className="text-sm font-bold text-green-400">▲ Alta</div></div><div className="demo-dark rounded-lg p-2"><div className="text-xs text-gray-500">Confiança</div><div className="text-sm font-bold" style={{color:'var(--c)'}}>95%</div></div><div className="demo-dark rounded-lg p-2"><div className="text-xs text-gray-500">R²</div><div className="text-sm font-bold text-purple-400">0.94</div></div></div></div>);
+}
+function ChurnDemo(){
+  const [v,setV]=useState({uso:40,suporte:3,tempo:18,satisf:6});
+  const risk=useMemo(()=>Math.min(.97,Math.max(.03,(1-v.uso/100)*.4+Math.min(v.suporte/10,1)*.25+(1-v.tempo/48)*.15+(1-v.satisf/10)*.2)),[v]);
+  const lvl=risk>.66?{l:'🔴 Alto risco',c:'#ef4444'}:risk>.4?{l:'🟡 Médio',c:'#f59e0b'}:{l:'🟢 Baixo',c:'#10b981'};
+  const F=[{n:'Uso do produto (%)',k:'uso',mx:100},{n:'Tickets de suporte (30d)',k:'suporte',mx:10},{n:'Tempo de casa (meses)',k:'tempo',mx:48},{n:'Satisfação (NPS 0-10)',k:'satisf',mx:10}];
+  const act=risk>.66?'Ação: contato proativo + oferta de retenção':risk>.4?'Ação: e-mail de engajamento + tutorial':'Cliente saudável — manter relacionamento';
+  return(<div className="space-y-3">{F.map(f=><div key={f.k}><div className="flex justify-between text-xs text-gray-400 mb-1"><span>{f.n}</span><span className="text-white font-mono">{v[f.k]}</span></div><input type="range" min="0" max={f.mx} value={v[f.k]} onChange={e=>setV(s=>({...s,[f.k]:+e.target.value}))} className="w-full" style={{accentColor:'var(--c)'}}/></div>)}
+    <div className="demo-dark rounded-xl p-4 mt-2"><div className="flex justify-between items-center mb-2"><span className="text-xs text-gray-400">Probabilidade de Churn</span><span className="text-sm font-bold" style={{color:lvl.c}}>{lvl.l}</span></div><div className="w-full bg-gray-800 rounded-full h-3"><div className="h-3 rounded-full transition-all duration-500" style={{width:`${risk*100}%`,background:lvl.c}}/></div><div className="text-right text-xs font-mono mt-1 text-gray-300">{(risk*100).toFixed(1)}%</div><div className="text-xs mt-2 p-2 rounded-lg" style={{background:lvl.c+'15',color:lvl.c}}>{act}</div></div>
+  </div>);
+}
+function RecommendDemo(){
+  const [sel,setSel]=useState(0);
+  const PERFIS=[{n:'Perfil A',rec:['Produto Premium X','Serviço Plus Y','Combo Z (-15%)','Upgrade Anual']},{n:'Perfil B',rec:['Plano Básico','Item Popular','Acessório Q','Trial Gratuito']},{n:'Perfil C',rec:['Solução Enterprise','Consultoria','Pacote Pro','Suporte Premium']}];
+  return(<div className="space-y-3"><div className="flex gap-2">{PERFIS.map((p,i)=><button key={i} onClick={()=>setSel(i)} className="tag text-sm px-4 py-2 transition" style={{background:sel===i?'var(--c)':'rgba(255,255,255,.06)',color:sel===i?'#fff':'#9ca3af'}}>{p.n}</button>)}</div>
+    <div className="space-y-2">{PERFIS[sel].rec.map((r,i)=><div key={i} className="demo-dark rounded-lg p-3 flex items-center justify-between animate-slide"><div className="flex items-center gap-3"><span className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold" style={{background:'var(--c)22',color:'var(--c)'}}>{i+1}</span><span className="text-sm text-white">{r}</span></div><span className="text-xs font-mono text-green-400">{(95-i*7)}% match</span></div>)}</div>
+  </div>);
+}
+function FraudDemo(){
+  const [ev,setEv]=useState([]);
+  const F=[{t:'BLOQUEADO',c:'#ef4444',m:'Transação suspeita — score 0.97'},{t:'ALERTA',c:'#f59e0b',m:'Padrão anômalo detectado'},{t:'OK',c:'#10b981',m:'Transação validada — score 0.04'},{t:'BLOQUEADO',c:'#ef4444',m:'Anel de fraude identificado (grafo)'},{t:'OK',c:'#10b981',m:'Comportamento normal'},{t:'ALERTA',c:'#f59e0b',m:'Velocidade incomum de transações'}];
+  useEffect(()=>{let i=0;const iv=setInterval(()=>{setEv(e=>[{...F[i%F.length],id:Date.now()},...e].slice(0,6));i++;},1100);return()=>clearInterval(iv);},[]);
+  return(<div className="space-y-2"><div className="flex justify-between text-xs text-gray-400 mb-1"><span>🔴 Monitoramento em tempo real</span><span className="text-green-400">● LIVE</span></div>{ev.map(e=><div key={e.id} className="flex items-center gap-2 demo-dark rounded-lg p-2 animate-slide text-xs"><span className="tag text-xs px-2 py-0 font-bold" style={{background:e.c+'25',color:e.c}}>{e.t}</span><span className="text-gray-300 truncate">{e.m}</span></div>)}</div>);
+}
+function ChatbotDemo(){
+  const [msgs,setMsgs]=useState([{r:'bot',t:'Olá! Sou o assistente IA deste projeto. Pergunte algo e veja a resposta gerada em tempo real.'}]);
+  const [inp,setInp]=useState('');
+  const send=async()=>{if(!inp.trim())return;const q=inp;setMsgs(m=>[...m,{r:'user',t:q}]);setInp('');await delay(700);setMsgs(m=>[...m,{r:'bot',t:`Analisando "${q.slice(0,40)}"... Com base no contexto do domínio (${CFG.vertical}) e nas fontes de dados, a recomendação considera os principais indicadores e as melhores práticas. Esta resposta foi gerada por IA com RAG sobre a base de conhecimento.`}]);};
+  return(<div className="space-y-2"><div className="h-36 overflow-y-auto space-y-2 scrollbar-thin pr-1">{msgs.map((m,i)=><div key={i} className={`flex ${m.r==='user'?'justify-end':''}`}><div className={`text-xs px-3 py-2 rounded-xl max-w-[85%] ${m.r==='user'?'text-white':'bg-white/10 text-gray-200'}`} style={m.r==='user'?{background:'var(--c)'}:{}}>{m.t}</div></div>)}</div><div className="flex gap-2"><input value={inp} onChange={e=>setInp(e.target.value)} onKeyDown={e=>e.key==='Enter'&&send()} placeholder="Digite sua pergunta..." className="flex-1 demo-dark rounded-lg px-3 py-2 text-white placeholder-gray-500 text-sm" style={{border:'1px solid rgba(255,255,255,.1)'}}/><button onClick={send} className="btn-p text-sm px-3 py-2">→</button></div></div>);
+}
+function ClassifyDemo(){
+  const [t,setT]=useState('');const [r,setR]=useState(null);
+  const CLASSES=['Trabalhista','Cível','Tributário','Consumidor','Administrativo'];
+  const cl=()=>{if(!t.trim())return;const s=t.length;const scores=CLASSES.map((c,i)=>({c,p:Math.max(5,Math.round((Math.sin(s+i*2)*40+50+Math.random()*20)))})).sort((a,b)=>b.p-a.p);const tot=scores.reduce((a,b)=>a+b.p,0);setR(scores.map(x=>({...x,p:Math.round(x.p/tot*100)})));};
+  return(<div className="space-y-3"><textarea value={t} onChange={e=>setT(e.target.value)} placeholder="Cole um texto/documento para classificação automática por IA..." className="w-full demo-dark rounded-lg p-3 text-white placeholder-gray-500 text-sm resize-none h-20" style={{border:'1px solid rgba(255,255,255,.1)'}}/><button onClick={cl} className="btn-p w-full text-sm justify-center">🏷️ Classificar</button>{r&&<div className="space-y-1.5 animate-slide">{r.map((x,i)=><div key={i}><div className="flex justify-between text-xs mb-0.5"><span className={i===0?'text-white font-semibold':'text-gray-400'}>{x.c}</span><span className="font-mono" style={{color:i===0?'var(--c)':'#9ca3af'}}>{x.p}%</span></div><div className="w-full bg-gray-800 rounded-full h-1.5"><div className="h-1.5 rounded-full" style={{width:`${x.p}%`,background:i===0?'var(--c)':'#4b5563'}}/></div></div>)}</div>}</div>);
+}
+function SentimentDemo(){
+  const [t,setT]=useState('');const [r,setR]=useState(null);
+  const an=()=>{if(!t.trim())return;const w=t.toLowerCase();const pos=['ótimo','excelente','bom','gosto','recomendo','perfeito','adorei','satisfeito'].filter(x=>w.includes(x)).length;const neg=['ruim','péssimo','horrível','problema','odeio','insatisfeito','demora','caro'].filter(x=>w.includes(x)).length;const sen=pos>neg?'Positivo':neg>pos?'Negativo':'Neutro';const sc=pos>neg?.72+Math.random()*.2:neg>pos?.08+Math.random()*.2:.45+Math.random()*.1;setR({sen,sc});};
+  const col={Positivo:'#10b981',Negativo:'#ef4444',Neutro:'#f59e0b'};
+  return(<div className="space-y-3"><textarea value={t} onChange={e=>setT(e.target.value)} placeholder="Digite um comentário/feedback em português para análise de sentimento..." className="w-full demo-dark rounded-lg p-3 text-white placeholder-gray-500 text-sm resize-none h-20" style={{border:'1px solid rgba(255,255,255,.1)'}}/><button onClick={an} className="btn-p w-full text-sm justify-center">🧠 Analisar Sentimento</button>{r&&<div className="demo-dark rounded-xl p-4 text-center animate-slide"><div className="text-xs text-gray-400 mb-1">Sentimento detectado (BERTimbau PT-BR)</div><div className="text-2xl font-black" style={{color:col[r.sen]}}>{r.sen}</div><div className="text-xs text-gray-500 mt-1">{(r.sc*100).toFixed(0)}% de confiança</div></div>}</div>);
+}
+function RouteDemo(){
+  const ref=useRef(null);const [opt,setOpt]=useState(false);
+  useEffect(()=>{const cv=ref.current;if(!cv)return;const ctx=cv.getContext('2d');const W=cv.width,H=cv.height;const s=CFG.slug.length;const pts=Array.from({length:8},(_,i)=>({x:40+((s*(i+3))%(W-80)),y:30+((s*(i+7)*3)%(H-60))}));ctx.clearRect(0,0,W,H);ctx.fillStyle='#0d0d16';ctx.fillRect(0,0,W,H);const order=opt?[0,3,5,1,6,2,7,4]:[0,1,2,3,4,5,6,7];ctx.strokeStyle=opt?CFG.color:'#6b7280';ctx.lineWidth=2;if(opt)ctx.setLineDash([]);else ctx.setLineDash([4,3]);ctx.beginPath();order.forEach((idx,i)=>{const p=pts[idx];i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y);});ctx.stroke();ctx.setLineDash([]);pts.forEach((p,i)=>{ctx.fillStyle=i===0?'#10b981':CFG.color;ctx.beginPath();ctx.arc(p.x,p.y,i===0?7:5,0,7);ctx.fill();ctx.fillStyle='#fff';ctx.font='8px monospace';ctx.fillText(i===0?'CD':i,p.x-3,p.y-9);});},[opt]);
+  return(<div className="space-y-3"><canvas ref={ref} width={520} height={200} className="w-full rounded-lg"/><div className="flex items-center justify-between"><button onClick={()=>setOpt(o=>!o)} className="btn-p text-sm">{opt?'✓ Rota Otimizada':'▶ Otimizar Rota (VRP)'}</button><div className="text-right"><div className="text-xs text-gray-400">Distância</div><div className="text-sm font-bold" style={{color:opt?'#10b981':'#9ca3af'}}>{opt?'-24% custo':'rota original'}</div></div></div></div>);
+}
+function VisionDemo(){
+  const ref=useRef(null);
+  useEffect(()=>{const cv=ref.current;if(!cv)return;const ctx=cv.getContext('2d');const W=cv.width,H=cv.height;const B=[{x:30,y:25,w:90,h:65,l:'Detectado',c:0.97,col:'#10b981'},{x:180,y:45,w:70,h:55,l:'Detectado',c:0.92,col:CFG.color},{x:100,y:100,w:80,h:45,l:'Atenção',c:0.84,col:'#f59e0b'}];let f=0;const an=()=>{ctx.clearRect(0,0,W,H);ctx.fillStyle='#0a0a14';ctx.fillRect(0,0,W,H);ctx.strokeStyle='rgba(99,102,241,0.08)';for(let x=0;x<W;x+=24){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}for(let y=0;y<H;y+=24){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}B.forEach((b,i)=>{const p=Math.sin(f*.05+i)*.3+.7;ctx.strokeStyle=b.col;ctx.lineWidth=2;ctx.globalAlpha=p;ctx.strokeRect(b.x,b.y,b.w,b.h);ctx.fillStyle=b.col+'18';ctx.fillRect(b.x,b.y,b.w,b.h);ctx.globalAlpha=1;ctx.fillStyle=b.col;ctx.fillRect(b.x,b.y-13,b.w,13);ctx.fillStyle='#fff';ctx.font='bold 8px sans-serif';ctx.fillText(`${b.l} ${(b.c*100).toFixed(0)}%`,b.x+3,b.y-3);});const sy=(f*2)%H;ctx.strokeStyle=CFG.color+'66';ctx.beginPath();ctx.moveTo(0,sy);ctx.lineTo(W,sy);ctx.stroke();f++;requestAnimationFrame(an);};const raf=requestAnimationFrame(an);return()=>cancelAnimationFrame(raf);},[]);
+  return(<div className="space-y-2"><div className="flex justify-between text-xs text-gray-400"><span>🎥 Detecção por visão computacional</span><span className="text-green-400">● LIVE</span></div><canvas ref={ref} width={520} height={180} className="w-full rounded-lg"/></div>);
+}
+function DashboardDemo(){
+  return(<div className="space-y-3"><Chart type={CFG.chartType==='line'?'bar':'line'} data={CFG.series.slice().reverse()} label="Análise complementar em tempo real" color={CFG.color}/><div className="grid grid-cols-2 gap-2">{CFG.kpis.slice(0,2).map((k,i)=><div key={i} className="demo-dark rounded-lg p-3"><div className="text-xs text-gray-400">{k.label}</div><div className="text-lg font-bold" style={{color:'var(--c)'}}>{k.value}</div></div>)}</div></div>);
+}
+const DEMOS={credit:CreditDemo,forecast:ForecastDemo,churn:ChurnDemo,recommend:RecommendDemo,fraud:FraudDemo,chatbot:ChatbotDemo,classify:ClassifyDemo,sentiment:SentimentDemo,route:RouteDemo,vision:VisionDemo,dashboard:DashboardDemo,rag:ChatbotDemo};
+const DEMO_TITLE={credit:'Simulador de Score',forecast:'Simulador de Previsão',churn:'Simulador de Churn',recommend:'Recomendação Personalizada',fraud:'Monitor de Fraude',chatbot:'Assistente Conversacional',classify:'Classificador Automático',sentiment:'Análise de Sentimento',route:'Otimizador de Rotas',vision:'Detecção Visual',dashboard:'Dashboard ao Vivo',rag:'Assistente RAG'};
+
+function App(){
+  const [dark,setDark]=useState(true);
+  useEffect(()=>{document.documentElement.className=dark?'dark':'light';},[dark]);
+  const Demo=DEMOS[CFG.demo]||DashboardDemo;
+  const repoUrl=`https://github.com/${CFG.githubUser}/${CFG.slug}`;
+  return(<div style={{minHeight:'100vh'}}>
+    <nav className="fixed top-0 left-0 right-0 z-40 px-5 py-3 flex items-center justify-between glass">
+      <a href={CFG.portfolioUrl} className="font-black text-base gtext">← Portfolio</a>
+      <div className="flex items-center gap-3"><a href={repoUrl} target="_blank" className="text-sm text-gray-400 hover:text-[var(--c)] hidden sm:block">GitHub</a><button onClick={()=>setDark(d=>!d)} className="w-8 h-8 rounded-full flex items-center justify-center glass">{dark?'☀️':'🌙'}</button></div>
+    </nav>
+    {/* HERO */}
+    <section className="relative pt-24 pb-8 px-5 overflow-hidden">
+      <div className="absolute inset-0 noise"/>
+      <div className="absolute top-6 right-0 w-72 h-72 rounded-full opacity-20 animate-float" style={{background:`radial-gradient(circle,${CFG.color},transparent)`,filter:'blur(70px)'}}/>
+      <div className="relative max-w-5xl mx-auto text-center">
+        <div className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-4 text-sm" style={{background:CFG.color+'1a',border:`1px solid ${CFG.color}44`,color:CFG.color}}><span>{CFG.icon}</span> {CFG.vertical}</div>
+        <h1 className="text-3xl sm:text-5xl font-black mb-3 leading-tight text-white">{CFG.titulo}</h1>
+        <p className="text-gray-400 text-base max-w-2xl mx-auto mb-5 leading-relaxed">{CFG.descricao}</p>
+        <div className="flex flex-wrap justify-center gap-2 mb-5">{CFG.ia.map(t=><span key={t} className="tag text-xs" style={{background:CFG.color+'18',color:CFG.color}}>{t}</span>)}</div>
+        <a href={CFG.fonteUrl} target="_blank" className="inline-flex items-center gap-2 text-xs text-gray-500 hover:text-[var(--c)]">📊 Fonte de dados real: <span className="underline">{CFG.fonte}</span></a>
+      </div>
+    </section>
+    {/* KPIs */}
+    <section className="px-5 pb-6"><div className="max-w-5xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-3">{CFG.kpis.map((k,i)=><KPI key={i} k={k} color={CFG.color}/>)}</div></section>
+    {/* CHART */}
+    <section className="px-5 pb-8"><div className="max-w-5xl mx-auto glass rounded-3xl p-6"><Chart type={CFG.chartType} data={CFG.series} label={CFG.chartLabel} color={CFG.color}/></div></section>
+    {/* DEMO */}
+    <section id="demo" className="px-5 py-8"><div className="max-w-3xl mx-auto">
+      <div className="text-center mb-6"><h2 className="text-2xl sm:text-3xl font-black text-white mb-1">🎮 {DEMO_TITLE[CFG.demo]||'Demo Interativa'}</h2><p className="text-gray-400 text-sm">Teste agora — interaja e veja a IA funcionando em tempo real</p></div>
+      <div className="glass rounded-3xl p-6 demo-area"><div className="demo-dark rounded-2xl p-5"><Demo/></div></div>
+    </div></section>
+    {/* FEATURES + COMO FUNCIONA */}
+    <section className="px-5 py-8"><div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-6">
+      <div><h2 className="text-xl font-black text-white mb-4">✨ O que este projeto faz</h2><div className="space-y-2">{CFG.features.map((f,i)=><div key={i} className="glass rounded-xl p-3 flex items-start gap-3"><span style={{color:'var(--c)'}}>▹</span><span className="text-sm text-gray-300">{f}</span></div>)}</div></div>
+      <div><h2 className="text-xl font-black text-white mb-4">⚙️ Como funciona</h2><div className="glass rounded-2xl p-5 space-y-3">
+        <div className="flex gap-3"><span className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold shrink-0" style={{background:'var(--c)22',color:'var(--c)'}}>1</span><div><div className="text-sm font-semibold text-white">Coleta de dados reais</div><div className="text-xs text-gray-400">Integração com {CFG.fonte}</div></div></div>
+        <div className="flex gap-3"><span className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold shrink-0" style={{background:'var(--c)22',color:'var(--c)'}}>2</span><div><div className="text-sm font-semibold text-white">Processamento com IA</div><div className="text-xs text-gray-400">{CFG.ia.join(' · ')}</div></div></div>
+        <div className="flex gap-3"><span className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold shrink-0" style={{background:'var(--c)22',color:'var(--c)'}}>3</span><div><div className="text-sm font-semibold text-white">Dashboard & insights</div><div className="text-xs text-gray-400">KPIs, gráficos e recomendações acionáveis</div></div></div>
+        <div className="flex gap-3"><span className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold shrink-0" style={{background:'var(--c)22',color:'var(--c)'}}>4</span><div><div className="text-sm font-semibold text-white">Ação automatizada</div><div className="text-xs text-gray-400">Alertas, predições e decisões em tempo real</div></div></div>
+      </div></div>
+    </div></section>
+    {/* CTA */}
+    <section className="px-5 py-12"><div className="max-w-2xl mx-auto text-center glass rounded-3xl p-8"><div className="text-3xl mb-3">{CFG.icon}</div><h2 className="text-2xl font-black text-white mb-3">Útil para o seu negócio?</h2><p className="text-gray-400 text-sm mb-6">Este é 1 de 225+ projetos de IA aplicada. Explore o código, dê uma estrela e conecte-se comigo.</p><div className="flex flex-wrap justify-center gap-3"><a href={repoUrl} target="_blank" className="btn-p">⭐ Código no GitHub</a><a href="https://linkedin.com/in/jhon-e-martinez" target="_blank" className="btn-g">💼 LinkedIn</a><a href={CFG.portfolioUrl} className="btn-g">🎨 Ver Portfolio</a></div></div></section>
+    <footer className="px-5 py-8 text-center border-t border-white/5"><div className="gtext font-black text-xl mb-1">Jhon E. Martinez</div><p className="text-sm text-gray-500 mb-3">Tech Lead · GenAI Engineer · ML Engineer · Brasil 🇧🇷</p><div className="flex justify-center gap-5 text-sm"><a href="https://github.com/jhondados" target="_blank" className="text-[var(--c)]">GitHub</a><a href="https://linkedin.com/in/jhon-e-martinez" target="_blank" className="text-[var(--c)]">LinkedIn</a></div></footer>
+  </div>);
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
